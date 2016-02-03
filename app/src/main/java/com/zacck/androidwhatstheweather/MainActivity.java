@@ -1,10 +1,12 @@
 package com.zacck.androidwhatstheweather;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,11 +44,13 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"Please Enter a city for the App to work", Toast.LENGTH_LONG).show();
         }
         else {
+            InputMethodManager mgr = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            mgr.hideSoftInputFromWindow(etCity.getWindowToken(),0);
             //make an instance of downloadweather
             DownloadWeather mdoDownloadWeather = new DownloadWeather();
             try {
 
-                mdoDownloadWeather.execute("http://api.openweathermap.org/data/2.5/weather?q="+etCity.getText().toString()+",uk&appid=44db6a862fba0b067b1930da0d769e98").get();
+                mdoDownloadWeather.execute("http://api.openweathermap.org/data/2.5/weather?q=" + etCity.getText().toString() + ",uk&appid=44db6a862fba0b067b1930da0d769e98").get();
 
             } catch (Exception e) {
                 e.printStackTrace();
