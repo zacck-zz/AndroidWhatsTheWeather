@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
             //make an instance of downloadweather
             DownloadWeather mdoDownloadWeather = new DownloadWeather();
             try {
-
-                mdoDownloadWeather.execute("http://api.openweathermap.org/data/2.5/weather?q=" + etCity.getText().toString() + ",uk&appid=44db6a862fba0b067b1930da0d769e98").get();
+                String encodedCityName = URLEncoder.encode(etCity.getText().toString(), "UTF-8");
+                mdoDownloadWeather.execute("http://api.openweathermap.org/data/2.5/weather?q=" + encodedCityName+ ",uk&appid=44db6a862fba0b067b1930da0d769e98").get();
 
             } catch (Exception e) {
                 e.printStackTrace();
