@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -21,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         DownloadWeather mdoDownloadWeather = new DownloadWeather();
         try {
             String returned = mdoDownloadWeather.execute("http://api.openweathermap.org/data/2.5/weather?q=Johannesburg,uk&appid=44db6a862fba0b067b1930da0d769e98").get();
-            Log.i(getPackageName(), returned);
+
         }catch(Exception e)
         {
             e.printStackTrace();
@@ -31,6 +34,34 @@ public class MainActivity extends AppCompatActivity {
     public class DownloadWeather extends AsyncTask<String, Void, String>
     {
         String result = "";
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            try {
+                JSONObject mWeatherObject = new JSONObject(result);
+                String mWeatherContent = mWeatherObject.getString("weather");
+
+                //loop through the info
+                JSONArray mWeatherArray = new JSONArray(mWeatherContent);
+                for(int i=0; i<mWeatherArray.length(); i++)
+                {
+                    JSONObject mWeatherChild = mWeatherArray.getJSONObject(i);
+
+                    String mMain = mWeatherChild.getString("main");
+                    String mDesc = mWeatherChild.getString("description");
+
+                    Log.i(getPackageName(), mMain+" "+mDesc);
+
+
+
+                }
+            }
+            catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
 
         @Override
         protected String doInBackground(String... weatherUrls) {
