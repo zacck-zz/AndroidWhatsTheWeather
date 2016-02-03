@@ -4,6 +4,10 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,19 +19,38 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextView tvWeather;
+    EditText etCity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //make an instance of downloadweather
-        DownloadWeather mdoDownloadWeather = new DownloadWeather();
-        try {
-            String returned = mdoDownloadWeather.execute("http://api.openweathermap.org/data/2.5/weather?q=Johannesburg,uk&appid=44db6a862fba0b067b1930da0d769e98").get();
+        tvWeather = (TextView)findViewById(R.id.tvWeather);
+        etCity = (EditText)findViewById(R.id.etMcity);
 
-        }catch(Exception e)
+
+
+
+    }
+
+    public void getWeather(View view)
+    {
+        if(etCity.getText().toString().isEmpty())
         {
-            e.printStackTrace();
+            Toast.makeText(getApplicationContext(),"Please Enter a city for the App to work", Toast.LENGTH_LONG).show();
+        }
+        else {
+            //make an instance of downloadweather
+            DownloadWeather mdoDownloadWeather = new DownloadWeather();
+            try {
+
+                mdoDownloadWeather.execute("http://api.openweathermap.org/data/2.5/weather?q="+etCity.getText().toString()+",uk&appid=44db6a862fba0b067b1930da0d769e98").get();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -51,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     String mMain = mWeatherChild.getString("main");
                     String mDesc = mWeatherChild.getString("description");
 
-                    Log.i(getPackageName(), mMain+" "+mDesc);
+                    tvWeather.setText(mMain +" : "+mDesc);
 
 
 
@@ -59,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
             }
             catch(Exception e)
             {
-                e.printStackTrace();
+                tvWeather.setText(e.toString());
             }
         }
 
